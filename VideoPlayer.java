@@ -75,7 +75,6 @@ public class VideoPlayer extends JPanel {
 
 		// Adds the video time bar.
 		_videoPlayerBar = new JProgressBar();
-		_videoPlayerBar.setStringPainted(true);
 		_videoPlayerBar.setPreferredSize(new Dimension(640,30));
 		add(_videoPlayerBar);
 
@@ -91,6 +90,16 @@ public class VideoPlayer extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				int i = (int)(_video.getPosition()*100);
 				
+				int totaltime = (int) (_video.getLength()/1000);
+				int currenttime = (int) (_video.getTime()/1000);
+				int h = (totaltime/3600)%24;
+				int m = (totaltime/60)%60;
+				int s = (totaltime%60);
+				
+				int hh = (currenttime/3600)%24;
+				int mm = (currenttime/60)%60;
+				int ss = (currenttime%60);
+				_videoPlayerBar.setString(String.format("%02d", h)+":"+String.format("%02d", m)+":"+String.format("%02d", s)+"/"+String.format("%02d", hh)+":"+String.format("%02d", mm)+":"+String.format("%02d", ss));
 				_videoPlayerBar.setValue(i);
 				
 			}
@@ -211,6 +220,15 @@ public class VideoPlayer extends JPanel {
 
 			float f = (float)(e.getX())/(float) (_videoPlayerBar.getWidth());
 			_video.setPosition(f);
+		}
+		
+		public void mouseEntered(MouseEvent e){
+			_videoPlayerBar.setStringPainted(true);
+			
+		}
+		
+		public void mouseExited(MouseEvent e){
+			_videoPlayerBar.setStringPainted(false);
 		}
 	}
 
