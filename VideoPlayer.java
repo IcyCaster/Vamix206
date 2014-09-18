@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -37,6 +38,7 @@ public class VideoPlayer extends JPanel {
 
 	private JProgressBar _videoPlayerBar;
 	private JPanel _videoPlayerFunctions;
+	private JPanel _videoControls;
 
 	private JButton _fullScreenButton;
 	private RoundButton _rewindButton; 
@@ -44,16 +46,23 @@ public class VideoPlayer extends JPanel {
 	private RoundButton _fastforwardButton; 
 	private JButton _muteButton; 
 	private JSlider _volumeControl;
+	
+	private ImageIcon _fullScreenImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/FullScreen.png");
+	private ImageIcon _RRImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/Rewind.png");
+	private ImageIcon _playImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/PlayButton.png");
+	private ImageIcon _pauseImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/PauseButton.png");
+	private ImageIcon _FFImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/FastForward.png");
+	private ImageIcon _soundImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/Sound.png");
+	private ImageIcon _noSoundImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/NoSound.png");
 
+	private boolean _isPlaying = true;
+	private boolean _isSound = true;
+	
 	private String _videoName; 
 
 	private Timer _progress;
 
 	public VideoPlayer(String videoName) {
-
-		ImageIcon _circleButtonIcon =  new ImageIcon("/home/chester/Desktop/circle.png"); // Test Circle image.
-
-
 
 		_videoName = videoName;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -69,12 +78,12 @@ public class VideoPlayer extends JPanel {
 		_videoPlayerBar.setPreferredSize(new Dimension(640,30));
 		add(_videoPlayerBar);
 
-		// Adds the panel which holds all the buttons.
-		_videoPlayerFunctions = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		// Adds the panel which holds the buttons grid and the volume control.
+		_videoPlayerFunctions = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		_videoPlayerFunctions.setPreferredSize(new Dimension(640,70));
-		_videoPlayerFunctions.setBackground(Color.CYAN);
+		_videoPlayerFunctions.setBackground(Color.LIGHT_GRAY);
 		add(_videoPlayerFunctions, BorderLayout.SOUTH);
-
+		
 		// Clicking on the progress bar.
 		_progress = new Timer(200, new ActionListener(){
 			@Override
@@ -83,22 +92,47 @@ public class VideoPlayer extends JPanel {
 				_videoPlayerBar.setValue(i);
 			}
 		});
+		
+		// VideoControls panel holds the buttons.
+		_videoControls = new JPanel(new GridLayout(1,6,0,0));
+		_videoControls.setPreferredSize(new Dimension(360,70));
+		_videoControls.setBackground(Color.LIGHT_GRAY);
+		_videoPlayerFunctions.add(_videoControls);
 
 		// Creating the buttons.
-		_fullScreenButton = new JButton("FullScreen");
-		_rewindButton = new RoundButton(_circleButtonIcon);
-		_playPauseButton = new RoundButton(_circleButtonIcon);
-		_fastforwardButton = new RoundButton(_circleButtonIcon);
-		_muteButton = new JButton("Mute");
 		_volumeControl = new JSlider(0,200);
+		
+		_fullScreenButton = new JButton(_fullScreenImage);
+		_fullScreenButton.setPreferredSize(new Dimension(30,30));
+		JPanel fullScreenButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
+		fullScreenButtonPanel.setBackground(Color.LIGHT_GRAY);
+		fullScreenButtonPanel.add(_fullScreenButton);
+		
+		_rewindButton = new RoundButton(_RRImage);
+		JPanel rewindButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+		rewindButtonPanel.setBackground(Color.LIGHT_GRAY);
+		rewindButtonPanel.add(_rewindButton);
+		
+		_playPauseButton = new RoundButton(_pauseImage); // This doesn't need the additional panel because it's the perfect size.
+		
+		_fastforwardButton = new RoundButton(_FFImage);
+		JPanel fastforwardButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+		fastforwardButtonPanel.setBackground(Color.LIGHT_GRAY);
+		fastforwardButtonPanel.add(_fastforwardButton);
+		
+		_muteButton = new JButton(_soundImage);
+		_muteButton.setPreferredSize(new Dimension(30,30));
+		JPanel muteButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
+		muteButtonPanel.setBackground(Color.LIGHT_GRAY);
+		muteButtonPanel.add(_muteButton);
 
 		// Adding the buttons.
-		_videoPlayerFunctions.add(_fullScreenButton);
-		_videoPlayerFunctions.add(_rewindButton);
-		_videoPlayerFunctions.add(_playPauseButton);
-		_videoPlayerFunctions.add(_fastforwardButton);
-		_videoPlayerFunctions.add(_muteButton);
-		_videoPlayerFunctions.add(_volumeControl);
+		_videoControls.add(fullScreenButtonPanel);
+		_videoControls.add(rewindButtonPanel);
+		_videoControls.add(_playPauseButton);
+		_videoControls.add(fastforwardButtonPanel);
+		_videoControls.add(muteButtonPanel);
+		_videoControls.add(_volumeControl);
 
 		// Adding the Listeners to the buttons.
 		_playPauseButton.addActionListener(new PauseHandler());
@@ -148,9 +182,21 @@ public class VideoPlayer extends JPanel {
 
 			if(_video.getPosition() >= 1){
 				_video.playMedia(_videoName);
+				_isPlaying = false;
 			}
 			else{
 				_video.pause();
+				
+			}
+			if(_isPlaying) {
+				_playPauseButton.setIcon(_playImage);
+				_playPauseButton.validate();
+				_isPlaying = false;
+			}
+			else {
+				_playPauseButton.setIcon(_pauseImage);
+				_playPauseButton.validate();
+				_isPlaying = true;
 			}
 		}
 	}
@@ -169,6 +215,14 @@ public class VideoPlayer extends JPanel {
 	class MuteHandler implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
 			_video.mute();
+			if(_isSound) {
+				_muteButton.setIcon(_noSoundImage);
+				_isSound = false;
+			}
+			else {
+				_muteButton.setIcon(_soundImage);
+				_isSound = true;
+			}
 		}
 	}
 
