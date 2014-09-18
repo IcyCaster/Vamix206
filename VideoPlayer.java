@@ -66,6 +66,7 @@ public class VideoPlayer extends JPanel {
 
 		// Adds the video time bar.
 		_videoPlayerBar = new JProgressBar();
+		_videoPlayerBar.setStringPainted(true);
 		_videoPlayerBar.setPreferredSize(new Dimension(640,30));
 		add(_videoPlayerBar);
 
@@ -80,7 +81,9 @@ public class VideoPlayer extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = (int)(_video.getPosition()*100);
+				
 				_videoPlayerBar.setValue(i);
+				
 			}
 		});
 

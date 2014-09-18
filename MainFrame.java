@@ -54,7 +54,7 @@ public class MainFrame extends JFrame{
 		_topFeatures.add(_bigCircleButtons, BorderLayout.WEST);
 		
 		// A panel containing the actual media player at the top, a progress bar in the middle and a series of buttons at the bottom.
-		_completeVideoPlayer = new VideoPlayer("/home/chester/Documents/video.m4v");
+		_completeVideoPlayer = new VideoPlayer("/home/frankie/Documents/robo");
 		_completeVideoPlayer.setPreferredSize(new Dimension(640,460));
 		_completeVideoPlayer.setBackground(Color.BLUE); //REMOVE
 		_topFeatures.add(_completeVideoPlayer, BorderLayout.EAST);
@@ -120,7 +120,6 @@ public class MainFrame extends JFrame{
 				
 			}	
     	});
-		
 		
 		
 		// Completing the Mainframe setup.
