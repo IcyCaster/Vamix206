@@ -17,6 +17,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 
+
 public class MainFrame extends JFrame{
 
 	private JPanel _topFeatures;
@@ -30,6 +31,11 @@ public class MainFrame extends JFrame{
 	private RoundButton _textEditButton;
 	private RoundButton _saveButton; 
 
+	//Index positions of all the panels in the tabbed pane
+	private int _downloadIndex;
+	private int _editIndex;
+	private int _textEditIndex;
+	
 	private VideoPlayer _completeVideoPlayer;
 
 	// Images for the circle buttons
@@ -49,10 +55,13 @@ public class MainFrame extends JFrame{
 
 		// A tabbed pane which consists of the Download, Edit Video and Edit Text tabs.
 		_tabbedpane = new JTabbedPane();
-		_tabbedpane.add(new JPanel());
 		_tabbedpane.setPreferredSize(new Dimension(100 + 640,250));
 		add(_tabbedpane, BorderLayout.SOUTH);
-
+		
+		//Initialise download pane
+		final DownloadPane d =new DownloadPane();
+		_tabbedpane.addTab("Download",d);
+		_downloadIndex = _tabbedpane.indexOfTab("Download");	
 
 		// A panel containing the five buttons: Select Media, Download Media, Edit Media, Edit Text, Save.
 		_bigCircleButtons = new JPanel(new GridLayout(5,1,0,0));
@@ -92,7 +101,7 @@ public class MainFrame extends JFrame{
 		_downloadButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				_tabbedpane.setSelectedIndex(_downloadIndex);
 
 			}
 		});
