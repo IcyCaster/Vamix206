@@ -1,3 +1,5 @@
+package Vamix206;
+
 import javax.swing.JPanel;
 
 
