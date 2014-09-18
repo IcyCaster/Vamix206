@@ -119,16 +119,10 @@ public class MainFrame extends JFrame{
 				// TODO Auto-generated method stub
 
 			}	
-<<<<<<< HEAD
+
     	});
-		
-		
-=======
-		});
 
 
-
->>>>>>> 152b343ee26c53dbe00836b61d969d9bc6a11693
 		// Completing the Mainframe setup.
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//this.setResizable(false);
