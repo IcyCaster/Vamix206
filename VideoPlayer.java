@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -19,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -46,7 +48,7 @@ public class VideoPlayer extends JPanel {
 	private RoundButton _fastforwardButton; 
 	private JButton _muteButton; 
 	private JSlider _volumeControl;
-	
+
 	private ImageIcon _fullScreenImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/FullScreen.png");
 	private ImageIcon _RRImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/Rewind.png");
 	private ImageIcon _playImage =  new ImageIcon("/home/chester/workspace/VamixAssignment3/VamixMediaButtons/PlayButton.png");
@@ -57,7 +59,12 @@ public class VideoPlayer extends JPanel {
 
 	private boolean _isPlaying = true;
 	private boolean _isSound = true;
-	
+	private boolean _isFastForwarding = false;
+	private boolean _isRewinding = false;
+
+	private VideoSkipWorker _fastForwardWorker = null;
+	private VideoSkipWorker _rewindingWorker = null;
+
 	private String _videoName; 
 
 	private Timer _progress;
@@ -83,28 +90,28 @@ public class VideoPlayer extends JPanel {
 		_videoPlayerFunctions.setPreferredSize(new Dimension(640,70));
 		_videoPlayerFunctions.setBackground(Color.LIGHT_GRAY);
 		add(_videoPlayerFunctions, BorderLayout.SOUTH);
-		
+
 		// Clicking on the progress bar.
 		_progress = new Timer(200, new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = (int)(_video.getPosition()*100);
-				
+
 				int totaltime = (int) (_video.getLength()/1000);
 				int currenttime = (int) (_video.getTime()/1000);
 				int h = (totaltime/3600)%24;
 				int m = (totaltime/60)%60;
 				int s = (totaltime%60);
-				
+
 				int hh = (currenttime/3600)%24;
 				int mm = (currenttime/60)%60;
 				int ss = (currenttime%60);
 				_videoPlayerBar.setString(String.format("%02d", h)+":"+String.format("%02d", m)+":"+String.format("%02d", s)+"/"+String.format("%02d", hh)+":"+String.format("%02d", mm)+":"+String.format("%02d", ss));
 				_videoPlayerBar.setValue(i);
-				
+
 			}
 		});
-		
+
 		// VideoControls panel holds the buttons.
 		_videoControls = new JPanel(new GridLayout(1,6,0,0));
 		_videoControls.setPreferredSize(new Dimension(360,70));
@@ -113,25 +120,25 @@ public class VideoPlayer extends JPanel {
 
 		// Creating the buttons.
 		_volumeControl = new JSlider(0,200);
-		
+
 		_fullScreenButton = new JButton(_fullScreenImage);
 		_fullScreenButton.setPreferredSize(new Dimension(30,30));
 		JPanel fullScreenButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
 		fullScreenButtonPanel.setBackground(Color.LIGHT_GRAY);
 		fullScreenButtonPanel.add(_fullScreenButton);
-		
+
 		_rewindButton = new RoundButton(_RRImage);
 		JPanel rewindButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
 		rewindButtonPanel.setBackground(Color.LIGHT_GRAY);
 		rewindButtonPanel.add(_rewindButton);
-		
+
 		_playPauseButton = new RoundButton(_pauseImage); // This doesn't need the additional panel because it's the perfect size.
-		
+
 		_fastforwardButton = new RoundButton(_FFImage);
 		JPanel fastforwardButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
 		fastforwardButtonPanel.setBackground(Color.LIGHT_GRAY);
 		fastforwardButtonPanel.add(_fastforwardButton);
-		
+
 		_muteButton = new JButton(_soundImage);
 		_muteButton.setPreferredSize(new Dimension(30,30));
 		JPanel muteButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
@@ -156,14 +163,30 @@ public class VideoPlayer extends JPanel {
 		_rewindButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				_video.skip(-7000);
+				_isFastForwarding = false;
+				if(!_isRewinding) {
+					_isRewinding = true;
+					_rewindingWorker = new VideoSkipWorker();
+					_rewindingWorker.execute();
+				}
+				else {
+					_rewindingWorker.cancel(true);
+				}
 			}
 		});
 
 		_fastforwardButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				_video.skip(7000);
+				_isRewinding = false;
+				if(!_isFastForwarding) {
+					_isFastForwarding = true;
+					_fastForwardWorker = new VideoSkipWorker();
+					_fastForwardWorker.execute();
+				}
+				else {
+					_fastForwardWorker.cancel(true);
+				}
 			}
 		});
 
@@ -192,13 +215,16 @@ public class VideoPlayer extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 
+			_isFastForwarding = false;
+			_isRewinding = false;
+
 			if(_video.getPosition() >= 1){
 				_video.playMedia(_videoName);
 				_isPlaying = false;
 			}
 			else{
 				_video.pause();
-				
+
 			}
 			if(_isPlaying) {
 				_playPauseButton.setIcon(_playImage);
@@ -221,12 +247,12 @@ public class VideoPlayer extends JPanel {
 			float f = (float)(e.getX())/(float) (_videoPlayerBar.getWidth());
 			_video.setPosition(f);
 		}
-		
+
 		public void mouseEntered(MouseEvent e){
 			_videoPlayerBar.setStringPainted(true);
-			
+
 		}
-		
+
 		public void mouseExited(MouseEvent e){
 			_videoPlayerBar.setStringPainted(false);
 		}
@@ -261,4 +287,38 @@ public class VideoPlayer extends JPanel {
 
 		}
 	}
+
+	class VideoSkipWorker extends SwingWorker<Void, Long> {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+
+			// Will loop if fast forwarding and if the current time of the video is under 97/100ths of the video
+			while(_isFastForwarding && _video.getLength() >= _video.getTime() + (3*_video.getLength()/100)) {
+				Thread.sleep(600);
+				publish(_video.getLength()/100);	
+			}
+			while(_isRewinding && _video.getTime() - (3*_video.getLength()/100) >= 0) {
+				Thread.sleep(600);
+				publish(-_video.getLength()/100);
+			}
+			return null;
+		}
+
+		// Skips the video.
+		protected void process(List<Long> chunks) {
+			for(int i = 0; i < chunks.size(); i++) {
+				_video.skip(chunks.get(i));
+			}
+		}
+
+		@Override
+		protected void done() {
+			_isFastForwarding = false;
+			_isRewinding = false;
+		}
+	}	
 }
+
+
+
