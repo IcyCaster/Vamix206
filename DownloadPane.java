@@ -126,9 +126,12 @@ public class DownloadPane extends Panel{
 		
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (_dlButton.isEnabled())
-				_dlButton.setEnabled(false);
-			else _dlButton.setEnabled(true);
+			if (_dlButton.isEnabled()) {
+				_dlButton.setEnabled(false); 
+			}
+			else {
+				_dlButton.setEnabled(true);
+			}
 		}
 	}
 	

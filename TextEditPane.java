@@ -1,5 +1,5 @@
 package Vamix206;
 
-public class TextEditPane {
+public class TextEditPane extends Panel {
 
 }

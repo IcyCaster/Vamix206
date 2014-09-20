@@ -28,11 +28,16 @@ public class MainFrame extends JFrame{
 
 	private JPanel _bigCircleButtons; 
 
-	private RoundButton _selectionButton; 
-	private RoundButton _downloadButton; 
-	private RoundButton _videoEditButton;
-	private RoundButton _textEditButton;
-	private RoundButton _saveButton; 
+//	private RoundButton _selectionButton; 
+//	private RoundButton _downloadButton; 
+//	private RoundButton _videoEditButton;
+//	private RoundButton _textEditButton;
+//	private RoundButton _saveButton; 
+	private JButton _selectionButton; 
+	private JButton _downloadButton; 
+	private JButton _videoEditButton;
+	private JButton _textEditButton;
+	private JButton _saveButton; 
 
 	//Index positions of all the panels in the tabbed pane
 	private int _downloadIndex;
@@ -57,7 +62,6 @@ public class MainFrame extends JFrame{
 		// A panel containing button panel on the left, and the complete video player on the right.
 		_topFeatures = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		_topFeatures.setPreferredSize(new Dimension(100 + 640,100 + 360));
-		_topFeatures.setBackground(Color.RED); // TESTING TO:BE removed
 		add(_topFeatures, BorderLayout.NORTH);
 
 		// A tabbed pane which consists of the Download, Edit Video and Edit Text tabs.
@@ -66,28 +70,41 @@ public class MainFrame extends JFrame{
 		add(_tabbedpane, BorderLayout.SOUTH);
 		
 		//Initialise download pane
-		final DownloadPane d =new DownloadPane();
-		_tabbedpane.addTab("Download",d);
-		_downloadIndex = _tabbedpane.indexOfTab("Download");	
+		final DownloadPane downloadPane = new DownloadPane();
+		_tabbedpane.addTab("Download",downloadPane);
+		_downloadIndex = _tabbedpane.indexOfTab("Download");
+		
+		final TextEditPane videoEditPane = new TextEditPane();
+		_tabbedpane.addTab("Video Edit", videoEditPane);
+		_videoEditIndex = _tabbedpane.indexOfTab("Video Edit");
+		
+		final TextEditPane textEditPane = new TextEditPane();
+		_tabbedpane.addTab("Text Edit", textEditPane);
+		_textEditIndex = _tabbedpane.indexOfTab("Text Edit");
 
 		// A panel containing the five buttons: Select Media, Download Media, Edit Media, Edit Text, Save.
 		_bigCircleButtons = new JPanel(new GridLayout(5,1,0,0));
 		_bigCircleButtons.setPreferredSize(new Dimension(100,460));
-		_bigCircleButtons.setBackground(Color.GREEN); // REMOVE
+		_bigCircleButtons.setBackground(Color.LIGHT_GRAY);
 		_topFeatures.add(_bigCircleButtons, BorderLayout.WEST);
 
 		// A panel containing the actual media player at the top, a progress bar in the middle and a series of buttons at the bottom.
-		_completeVideoPlayer = new VideoPlayer("");
+		_completeVideoPlayer = new VideoPlayer();
 		_completeVideoPlayer.setPreferredSize(new Dimension(640,460));
-		_completeVideoPlayer.setBackground(Color.BLUE); //REMOVE
 		_topFeatures.add(_completeVideoPlayer, BorderLayout.EAST);
 		
 		// Creating the circle buttons.
-		_selectionButton = new RoundButton(_circleImageOne);
-		_downloadButton = new RoundButton(_circleImageOne);
-		_videoEditButton = new RoundButton(_circleImageOne);
-		_textEditButton = new RoundButton(_circleImageOne);
-		_saveButton = new RoundButton(_circleImageOne);
+//		_selectionButton = new RoundButton(_circleImageOne);
+//		_downloadButton = new RoundButton(_circleImageOne);
+//		_videoEditButton = new RoundButton(_circleImageOne);
+//		_textEditButton = new RoundButton(_circleImageOne);
+//		_saveButton = new RoundButton(_circleImageOne);
+		_selectionButton = new JButton("<html><center>Select<br>Media</center></html");
+		_downloadButton = new JButton("<html><center>Download<br>Media</center></html");
+		_videoEditButton = new JButton("<html><center>Edit the<br>Video</center></html");
+		_textEditButton = new JButton("<html><center>Edit the<br>Text</center></html");
+		_saveButton = new JButton("<html><center>Save<br>Media</center></html");
+		
 
 		_selectionButton.addActionListener(new chooserHandler());
 		
@@ -149,8 +166,6 @@ public class MainFrame extends JFrame{
 		this.setVisible(true);
 		pack();
 
-		// Plays the media.
-		_completeVideoPlayer.playMedia();
 
 	}
 	
@@ -166,12 +181,12 @@ public class MainFrame extends JFrame{
 				_playingFile = _chooser.getSelectedFile();
 				try {
 					//Check if file is valid or not, and if it isn't then complain
-					Process checkFile= Panel.runBashCommand("file -ib "+"\""+_playingFile.getPath()+"\""+" | grep \"video\"");
+					Process checkFile= Panel.runBashCommand("file -ib "+"\""+_playingFile.getPath()+"\""+" | grep \"video\\|mpeg\"");
 					checkFile.waitFor();
 					if (checkFile.exitValue()!=0)
 						 JOptionPane.showMessageDialog(_completeVideoPlayer, "Please select a media file");
 					else{
-						
+						_completeVideoPlayer.playMedia(_playingFile.getPath());
 					}
 						
 				} catch (Exception e) {

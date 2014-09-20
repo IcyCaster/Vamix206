@@ -1,5 +1,6 @@
 package Vamix206;
 
+<<<<<<< HEAD
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -26,5 +27,8 @@ public class VideoEditPane extends Panel{
 		
 		
 	}
+=======
+public class VideoEditPane extends Panel{
+>>>>>>> 7cc49cd04525f1ffb173443d87a087f3a5cefee1
 
 }
