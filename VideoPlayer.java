@@ -70,9 +70,9 @@ public class VideoPlayer extends JPanel {
 
 	private Timer _progress;
 
-	public VideoPlayer(String videoName) {
+	public VideoPlayer() {
 
-		_videoName = videoName;
+		
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		// Adds the media player component.
@@ -107,7 +107,7 @@ public class VideoPlayer extends JPanel {
 				int hh = (currenttime/3600)%24;
 				int mm = (currenttime/60)%60;
 				int ss = (currenttime%60);
-				_videoPlayerBar.setString(String.format("%02d", h)+":"+String.format("%02d", m)+":"+String.format("%02d", s)+"/"+String.format("%02d", hh)+":"+String.format("%02d", mm)+":"+String.format("%02d", ss));
+				_videoPlayerBar.setString(String.format("%02d", hh)+":"+String.format("%02d", mm)+":"+String.format("%02d", ss)+"/"+String.format("%02d", h)+":"+String.format("%02d", m)+":"+String.format("%02d", s));
 				_videoPlayerBar.setValue(i);
 
 			}
@@ -211,7 +211,8 @@ public class VideoPlayer extends JPanel {
 	}
 
 	// Method which plays the selected media.
-	public void playMedia(){
+	public void playMedia(String media){
+		_videoName= media;
 		_videoPlayer.getMediaPlayer().playMedia(_videoName);
 		_progress.start();
 	}
