@@ -33,7 +33,7 @@ public class MainFrame extends JFrame{
 
 	//Index positions of all the panels in the tabbed pane
 	private int _downloadIndex;
-	private int _editIndex;
+	private int _videoEditIndex;
 	private int _textEditIndex;
 	
 	private VideoPlayer _completeVideoPlayer;
@@ -50,7 +50,6 @@ public class MainFrame extends JFrame{
 		// A panel containing button panel on the left, and the complete video player on the right.
 		_topFeatures = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		_topFeatures.setPreferredSize(new Dimension(100 + 640,100 + 360));
-		_topFeatures.setBackground(Color.RED); // TESTING TO:BE removed
 		add(_topFeatures, BorderLayout.NORTH);
 
 		// A tabbed pane which consists of the Download, Edit Video and Edit Text tabs.
@@ -66,13 +65,12 @@ public class MainFrame extends JFrame{
 		// A panel containing the five buttons: Select Media, Download Media, Edit Media, Edit Text, Save.
 		_bigCircleButtons = new JPanel(new GridLayout(5,1,0,0));
 		_bigCircleButtons.setPreferredSize(new Dimension(100,460));
-		_bigCircleButtons.setBackground(Color.GREEN); // REMOVE
+		_bigCircleButtons.setBackground(Color.LIGHT_GRAY);
 		_topFeatures.add(_bigCircleButtons, BorderLayout.WEST);
 
 		// A panel containing the actual media player at the top, a progress bar in the middle and a series of buttons at the bottom.
 		_completeVideoPlayer = new VideoPlayer("/home/chester/Documents/video.m4v");
 		_completeVideoPlayer.setPreferredSize(new Dimension(640,460));
-		_completeVideoPlayer.setBackground(Color.BLUE); //REMOVE
 		_topFeatures.add(_completeVideoPlayer, BorderLayout.EAST);
 
 		// Creating the circle buttons.
@@ -109,7 +107,7 @@ public class MainFrame extends JFrame{
 		_videoEditButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				_tabbedpane.setSelectedIndex(_videoEditIndex);
 
 			}	
 		});
@@ -117,7 +115,7 @@ public class MainFrame extends JFrame{
 		_textEditButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				_tabbedpane.setSelectedIndex(_textEditIndex);
 
 			}
 		});
