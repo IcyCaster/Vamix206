@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
@@ -190,17 +191,22 @@ public class VideoPlayer extends JPanel {
 			}
 		});
 
-
-
-
-
-
-
-
-
-
-
-
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 	}
 
@@ -295,11 +301,11 @@ public class VideoPlayer extends JPanel {
 
 			// Will loop if fast forwarding and if the current time of the video is under 97/100ths of the video
 			while(_isFastForwarding && _video.getLength() >= _video.getTime() + (3*_video.getLength()/100)) {
-				Thread.sleep(600);
+				Thread.sleep(60);
 				publish(_video.getLength()/100);	
 			}
 			while(_isRewinding && _video.getTime() - (3*_video.getLength()/100) >= 0) {
-				Thread.sleep(600);
+				Thread.sleep(60);
 				publish(-_video.getLength()/100);
 			}
 			return null;
