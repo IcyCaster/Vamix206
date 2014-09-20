@@ -45,7 +45,7 @@ public class MainFrame extends JFrame{
 
 	private File _playingFile;
 	// Images for the circle buttons
-	private ImageIcon _circleImageOne =  new ImageIcon("/home/chester/Desktop/circle.png");
+	private ImageIcon _circleImageOne =  new ImageIcon("/home/frankie/FastForward.png");
 	private ImageIcon _circleImageTwo =  new ImageIcon();
 	private ImageIcon _circleImageThree =  new ImageIcon();
 	private ImageIcon _circleImageFour =  new ImageIcon();
@@ -77,11 +77,11 @@ public class MainFrame extends JFrame{
 		_topFeatures.add(_bigCircleButtons, BorderLayout.WEST);
 
 		// A panel containing the actual media player at the top, a progress bar in the middle and a series of buttons at the bottom.
-		_completeVideoPlayer = new VideoPlayer("/home/chester/Documents/video.m4v");
+		_completeVideoPlayer = new VideoPlayer("");
 		_completeVideoPlayer.setPreferredSize(new Dimension(640,460));
 		_completeVideoPlayer.setBackground(Color.BLUE); //REMOVE
 		_topFeatures.add(_completeVideoPlayer, BorderLayout.EAST);
-
+		
 		// Creating the circle buttons.
 		_selectionButton = new RoundButton(_circleImageOne);
 		_downloadButton = new RoundButton(_circleImageOne);
@@ -98,14 +98,16 @@ public class MainFrame extends JFrame{
 		_bigCircleButtons.add(_textEditButton, BorderLayout.CENTER);
 		_bigCircleButtons.add(_saveButton, BorderLayout.CENTER);
 
-		// Implementing the buttons functions.
-		_selectionButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+		
 
-			}
-		});
+		// Implementing the buttons functions.
+//		_selectionButton.addActionListener(new ActionListener(){
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//		});
 
 		_downloadButton.addActionListener(new ActionListener(){
 			@Override
@@ -153,9 +155,10 @@ public class MainFrame extends JFrame{
 	}
 	
 	class chooserHandler implements ActionListener{
-
+		
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+	
 			int returnVal=_chooser.showOpenDialog(_completeVideoPlayer);
 			
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -163,10 +166,14 @@ public class MainFrame extends JFrame{
 				_playingFile = _chooser.getSelectedFile();
 				try {
 					//Check if file is valid or not, and if it isn't then complain
-					Process checkFile= Panel.runBashCommand("file -ib "+"\""+_playingFile.getPath()+"\""+" | grep \"audio\"");
+					Process checkFile= Panel.runBashCommand("file -ib "+"\""+_playingFile.getPath()+"\""+" | grep \"video\"");
 					checkFile.waitFor();
 					if (checkFile.exitValue()!=0)
 						 JOptionPane.showMessageDialog(_completeVideoPlayer, "Please select a media file");
+					else{
+						
+					}
+						
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
