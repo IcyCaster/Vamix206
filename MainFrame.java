@@ -181,7 +181,7 @@ public class MainFrame extends JFrame{
 				_playingFile = _chooser.getSelectedFile();
 				try {
 					//Check if file is valid or not, and if it isn't then complain
-					Process checkFile= Panel.runBashCommand("file -ib "+"\""+_playingFile.getPath()+"\""+" | grep \"video\\|mpeg\"");
+					Process checkFile= Panel.runBashCommand("file -ib "+"\""+_playingFile.getPath()+"\""+" | grep \"video\\|audio\"");
 					checkFile.waitFor();
 					if (checkFile.exitValue()!=0)
 						 JOptionPane.showMessageDialog(_completeVideoPlayer, "Please select a media file");
