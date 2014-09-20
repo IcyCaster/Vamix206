@@ -25,11 +25,16 @@ public class MainFrame extends JFrame{
 
 	private JPanel _bigCircleButtons; 
 
-	private RoundButton _selectionButton; 
-	private RoundButton _downloadButton; 
-	private RoundButton _videoEditButton;
-	private RoundButton _textEditButton;
-	private RoundButton _saveButton; 
+//	private RoundButton _selectionButton; 
+//	private RoundButton _downloadButton; 
+//	private RoundButton _videoEditButton;
+//	private RoundButton _textEditButton;
+//	private RoundButton _saveButton; 
+	private JButton _selectionButton; 
+	private JButton _downloadButton; 
+	private JButton _videoEditButton;
+	private JButton _textEditButton;
+	private JButton _saveButton; 
 
 	//Index positions of all the panels in the tabbed pane
 	private int _downloadIndex;
@@ -58,9 +63,17 @@ public class MainFrame extends JFrame{
 		add(_tabbedpane, BorderLayout.SOUTH);
 		
 		//Initialise download pane
-		final DownloadPane d =new DownloadPane();
-		_tabbedpane.addTab("Download",d);
-		_downloadIndex = _tabbedpane.indexOfTab("Download");	
+		final DownloadPane downloadPane = new DownloadPane();
+		_tabbedpane.addTab("Download",downloadPane);
+		_downloadIndex = _tabbedpane.indexOfTab("Download");
+		
+		final TextEditPane videoEditPane = new TextEditPane();
+		_tabbedpane.addTab("Video Edit", videoEditPane);
+		_videoEditIndex = _tabbedpane.indexOfTab("Video Edit");
+		
+		final TextEditPane textEditPane = new TextEditPane();
+		_tabbedpane.addTab("Text Edit", textEditPane);
+		_textEditIndex = _tabbedpane.indexOfTab("Text Edit");
 
 		// A panel containing the five buttons: Select Media, Download Media, Edit Media, Edit Text, Save.
 		_bigCircleButtons = new JPanel(new GridLayout(5,1,0,0));
@@ -74,11 +87,17 @@ public class MainFrame extends JFrame{
 		_topFeatures.add(_completeVideoPlayer, BorderLayout.EAST);
 
 		// Creating the circle buttons.
-		_selectionButton = new RoundButton(_circleImageOne);
-		_downloadButton = new RoundButton(_circleImageOne);
-		_videoEditButton = new RoundButton(_circleImageOne);
-		_textEditButton = new RoundButton(_circleImageOne);
-		_saveButton = new RoundButton(_circleImageOne);
+//		_selectionButton = new RoundButton(_circleImageOne);
+//		_downloadButton = new RoundButton(_circleImageOne);
+//		_videoEditButton = new RoundButton(_circleImageOne);
+//		_textEditButton = new RoundButton(_circleImageOne);
+//		_saveButton = new RoundButton(_circleImageOne);
+		_selectionButton = new JButton("<html><center>Select<br>Media</center></html");
+		_downloadButton = new JButton("<html><center>Download<br>Media</center></html");
+		_videoEditButton = new JButton("<html><center>Edit the<br>Video</center></html");
+		_textEditButton = new JButton("<html><center>Edit the<br>Text</center></html");
+		_saveButton = new JButton("<html><center>Save<br>Media</center></html");
+		
 
 		// Adding the circle buttons.
 		_bigCircleButtons.add(_selectionButton, BorderLayout.CENTER);

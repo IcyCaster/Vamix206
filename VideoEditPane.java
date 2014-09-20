@@ -1,5 +1,5 @@
 package Vamix206;
 
-public class VideoEditPane {
+public class VideoEditPane extends Panel{
 
 }
