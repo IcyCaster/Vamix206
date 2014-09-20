@@ -7,10 +7,13 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -33,18 +36,22 @@ public class MainFrame extends JFrame{
 
 	//Index positions of all the panels in the tabbed pane
 	private int _downloadIndex;
-	private int _editIndex;
+	private int _videoEditIndex;
 	private int _textEditIndex;
+	
+	private JFileChooser _chooser = new JFileChooser();
 	
 	private VideoPlayer _completeVideoPlayer;
 
+	private File _playingFile;
 	// Images for the circle buttons
 	private ImageIcon _circleImageOne =  new ImageIcon("/home/chester/Desktop/circle.png");
 	private ImageIcon _circleImageTwo =  new ImageIcon();
 	private ImageIcon _circleImageThree =  new ImageIcon();
 	private ImageIcon _circleImageFour =  new ImageIcon();
 	private ImageIcon _circleImageFive =  new ImageIcon();
-
+	
+	
 	public MainFrame(){
 
 		// A panel containing button panel on the left, and the complete video player on the right.
@@ -82,6 +89,8 @@ public class MainFrame extends JFrame{
 		_textEditButton = new RoundButton(_circleImageOne);
 		_saveButton = new RoundButton(_circleImageOne);
 
+		_selectionButton.addActionListener(new chooserHandler());
+		
 		// Adding the circle buttons.
 		_bigCircleButtons.add(_selectionButton, BorderLayout.CENTER);
 		_bigCircleButtons.add(_downloadButton, BorderLayout.CENTER);
@@ -109,7 +118,7 @@ public class MainFrame extends JFrame{
 		_videoEditButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				_tabbedpane.setSelectedIndex(_videoEditIndex);
 
 			}	
 		});
@@ -117,7 +126,7 @@ public class MainFrame extends JFrame{
 		_textEditButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				_tabbedpane.setSelectedIndex(_textEditIndex);
 
 			}
 		});
@@ -141,5 +150,27 @@ public class MainFrame extends JFrame{
 		// Plays the media.
 		_completeVideoPlayer.playMedia();
 
+	}
+	
+	class chooserHandler implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			int returnVal=_chooser.showOpenDialog(_completeVideoPlayer);
+			
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				
+				_playingFile = _chooser.getSelectedFile();
+				try {
+					//Check if file is valid or not, and if it isn't then complain
+					Process checkFile= Panel.runBashCommand("file -ib "+"\""+_playingFile.getPath()+"\""+" | grep \"audio\"");
+					checkFile.waitFor();
+					if (checkFile.exitValue()!=0)
+						 JOptionPane.showMessageDialog(_completeVideoPlayer, "Please select a media file");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
