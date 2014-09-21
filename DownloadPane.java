@@ -31,7 +31,7 @@ public class DownloadPane extends Panel{
 	
 	public DownloadPane(){
 		
-		_inner=null;
+		_inner = null;
 		_url = new JTextField();
 		_openSource = new JCheckBox("Is this open source?");
 		_dlButton = new JButton("Download");
@@ -143,7 +143,7 @@ public class DownloadPane extends Panel{
 		 
 			@Override
 			protected Void doInBackground() throws Exception {
-				//Starts the download and reads the output, calling findPercentage to publish it
+				//Starts the download and reads the output, calling find Percentage to publish it
 				sProcess = _psb.start();
 				InputStream stderr = sProcess.getErrorStream();
 				BufferedReader stderrRead = new BufferedReader(new InputStreamReader(stderr));

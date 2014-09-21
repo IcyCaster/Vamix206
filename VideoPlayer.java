@@ -31,6 +31,7 @@ import com.sun.jna.NativeLibrary;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
@@ -69,6 +70,10 @@ public class VideoPlayer extends JPanel {
 	private String _videoName; 
 
 	private Timer _progress;
+	
+	public EmbeddedMediaPlayer getVideo() {
+		return _video;
+	}
 
 	public VideoPlayer() {
 
@@ -221,7 +226,7 @@ public class VideoPlayer extends JPanel {
 	class PauseHandler implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-
+			
 			_isFastForwarding = false;
 			_isRewinding = false;
 

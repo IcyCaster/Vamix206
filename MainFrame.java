@@ -57,6 +57,10 @@ public class MainFrame extends JFrame{
 	private ImageIcon _circleImageFive =  new ImageIcon();
 	
 	
+	private DownloadPane _downloadPane;
+	private TextEditPane _textEditPane;
+	private VideoEditPane _videoEditPane;
+	
 	public MainFrame(){
 
 		// A panel containing button panel on the left, and the complete video player on the right.
@@ -70,16 +74,16 @@ public class MainFrame extends JFrame{
 		add(_tabbedpane, BorderLayout.SOUTH);
 		
 		//Initialise download pane
-		final DownloadPane downloadPane = new DownloadPane();
-		_tabbedpane.addTab("Download",downloadPane);
+		_downloadPane = new DownloadPane();
+		_tabbedpane.addTab("Download",_downloadPane);
 		_downloadIndex = _tabbedpane.indexOfTab("Download");
 		
-		final TextEditPane videoEditPane = new TextEditPane();
-		_tabbedpane.addTab("Video Edit", videoEditPane);
+		_videoEditPane = new VideoEditPane();
+		_tabbedpane.addTab("Video Edit", _videoEditPane);
 		_videoEditIndex = _tabbedpane.indexOfTab("Video Edit");
 		
-		final TextEditPane textEditPane = new TextEditPane();
-		_tabbedpane.addTab("Text Edit", textEditPane);
+		_textEditPane = new TextEditPane();
+		_tabbedpane.addTab("Text Edit", _textEditPane);
 		_textEditIndex = _tabbedpane.indexOfTab("Text Edit");
 
 		// A panel containing the five buttons: Select Media, Download Media, Edit Media, Edit Text, Save.
@@ -114,17 +118,6 @@ public class MainFrame extends JFrame{
 		_bigCircleButtons.add(_videoEditButton, BorderLayout.CENTER);
 		_bigCircleButtons.add(_textEditButton, BorderLayout.CENTER);
 		_bigCircleButtons.add(_saveButton, BorderLayout.CENTER);
-
-		
-
-		// Implementing the buttons functions.
-//		_selectionButton.addActionListener(new ActionListener(){
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//		});
 
 		_downloadButton.addActionListener(new ActionListener(){
 			@Override
@@ -181,11 +174,12 @@ public class MainFrame extends JFrame{
 				_playingFile = _chooser.getSelectedFile();
 				try {
 					//Check if file is valid or not, and if it isn't then complain
-					Process checkFile= Panel.runBashCommand("file -ib "+"\""+_playingFile.getPath()+"\""+" | grep \"video\\|audio\"");
+					Process checkFile= Panel.runBashCommand("file -ib "+"\""+_playingFile.getPath()+"\""+" | grep \"video\\|mpeg\\|octet-stream\"");
 					checkFile.waitFor();
 					if (checkFile.exitValue()!=0)
 						 JOptionPane.showMessageDialog(_completeVideoPlayer, "Please select a media file");
 					else{
+						_videoEditPane.update(_playingFile);
 						_completeVideoPlayer.playMedia(_playingFile.getPath());
 					}
 						
